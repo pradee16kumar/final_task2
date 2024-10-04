@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Order Form</title>
+    
+    
+     <script>
+        let productCount = 1; 
+
+        const customerNames = {
+            "1": "Pradeep",
+            "2": "Zarian",
+            "3": "Ram suba",
+            "4": "Surya",
+            "5": "Ajith kumar"
+        };
+
+        function updateCustomerName() {
+            const customerId = document.getElementById('customer').value;
+            const customerName = customerNames[customerId] || '';  
+            document.getElementById('customer_name').value = customerName;  
+        }
+
+        
+        function addProduct() {
+            if (productCount < 5) { 
+                productCount++;
+                const productContainer = document.getElementById('products');
+
+                const newProduct = document.createElement('div');
+                newProduct.innerHTML = `
+                    <label>Product:</label>
+                    <select name="product[]" required>
+                        <option value="">Select Product</option>
+                        <option value="A">Product A</option>
+                        <option value="B">Product B</option>
+                        <option value="C">Product C</option>
+                        <option value="D">Product D</option>
+                        <option value="E">Product E</option>
+                    </select>
+                    <label>Quantity:</label>
+                    <input type="number" name="quantity[]" min="1"  required />
+                    <button type="button" onclick="removeProduct(this)">Remove</button>
+                    <br>
+                `;
+
+                productContainer.appendChild(newProduct); 
+            } else {
+                alert("You can add a maximum of 5 products.");
+            }
+        }
+
+        
+        function removeProduct(button) {
+            button.parentElement.remove(); 
+            productCount--;
+        }
+
+        function checkDuplicateProducts(event) {
+            const products = document.getElementsByName('product[]');
+            const productSet = new Set();
+            
+            for (let i = 0; i < products.length; i++) {
+                const productValue = products[i].value;
+                
+                if (productSet.has(productValue) && productValue !== "") {
+                    alert('Duplicate product selected: ' + productValue + '. Please select different products.');
+                    event.preventDefault(); 
+                    return false;
+                }
+                
+                productSet.add(productValue); 
+            }
+
+            
+            return true;
+        }
+    </script> 
+</head>
+<body>
+
+<h2>Order Form</h2>
+
+
+<form action="process_order.php" method="POST" onsubmit="checkDuplicateProducts(event)">
+    
+    <label for="customer">Customer ID:</label>
+    <select id="customer" name="customer" onchange="updateCustomerName()" required>
+        <option value="">Select Customer</option>
+        <option value="1">Customer 1</option>
+        <option value="2">Customer 2</option>
+        <option value="3">Customer 3</option>
+        <option value="4">Customer 4</option>
+        <option value="5">Customer 5</option>
+    </select>
+    <br><br>
+
+    <label for="customer_name">Customer Name:</label>
+    <input type="text" id="customer_name" name="customer_name" readonly>
+    <br><br>
+
+    <div id="products">
+        <label>Product:</label>
+        <select name="product[]" required>
+            <option value="">Select Product</option>
+            <option value="A">Product A</option>
+            <option value="B">Product B</option>
+            <option value="C">Product C</option>
+            <option value="D">Product D</option>
+            <option value="E">Product E</option>
+        </select>
+        <label>Quantity:</label>
+        <input type="number" name="quantity[]" min="1"  required />
+        <br>
+    </div>
+    
+    <br>
+    
+    
+    <button type="button" onclick="addProduct()">Add Product</button>
+    <br><br>
+    
+    <input type="submit" value="Submit Order">
+    
+</form>
+
+</body>
+</html>
